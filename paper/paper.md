@@ -89,7 +89,7 @@ By default PhaseFieldPet simulates a static triple junction, see @Daubner:2023, 
 To simulate with non default combinations, for instance to solve phase field equation with gradient and potential energy terms above with $f_{bulk}(\phi,...)= 0$, we give the corresponding options to the run time as\
      &nbsp;&nbsp;&nbsp;`mpiexec -n 4 PhaseFieldPet -grad_weighted -pot_nestler  -simplex`\
 This means that we are using weighted (generalized) gradient energy formulation (`grad_weighted`), the obstacle potential (`pot_nestler`) as outlined above and apply Gibbs simplex constraint (`simplex`) to constrain each phase field $\phi_{\alpha}>=0$, $\sum_{\alpha} \phi_{\alpha} =1$ at each point in  the simulation domain. One can also use different Phase field equations (pfe) with optionlike  `pfe_mop` (Multiorder parameter model) which does not put any restriction on order parameters, `pfe_mpf` (Non lagrangian based Multi-Phase field Equation) [@Tegeler:2017] along with other gradient and potential energy contributions.
-For details of usage not mentioned here, including your own energy contributions, see the associated [Github page](https://github.com/ShoreSalle/) to this paper.
+For details of usage not mentioned here, including your own energy contributions, see the associated [Github page](https://github.com/ShoreSalle/PhaseFieldPet) to this paper.
 
 ## Example Performance Result
 
