@@ -72,10 +72,6 @@ Increase grid points to 256 x 256 x3
 
 #### On a GPU (cuda based)
   ```bash
-mpiexec -n 1 mpf -ts_type bdf -dm_vec_type cuda -dm_mat_type aijcusparse
-  ```
-## Not today
-  ```bash
-mpiexec -n 24 mpf -ts_type bdf -sim mop
+- mpiexec -n 1 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256 -dm_mat_type aijcusparse -dm_vec_type cuda
   ```
 
