@@ -9,7 +9,7 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
    - Pthread.
 
 # How to use
-  One can take  source code PhaseFieldPet.c, and compile and run it. The steps to download and install varies, but we give directions to do so here.
+  One can take  source code PhaseFieldPet.c, and compile and run it, visualize the results (default in vtk format) using visualizations softwares such as [ParaView](https://www.paraview.org/). The steps to download and install varies, but we give a general directions to do so here.
 
 ## Installation
 There are many ways to install PETSc. See [PETSc Installation](https://petsc.org/release/install/).
@@ -35,6 +35,8 @@ If in addition you one has NVIDIA GPU with compute capability, add `--with-cuda`
   ```
 
 ## Run your simulation
+### Static Triple Junction Simulation
+- Boundary condition in x direction is pinned.
 #### On CPU with n # mpi processes
 Solve with default time step solver set in the code (Adaptive Runge Kutta Implicit-Explicit) and see as time progress (`ts_monitor`)
   ```bash
@@ -69,7 +71,11 @@ Increase grid points to 256 x 256 x3
 ```bash
 - mpiexec -n 80 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256
  ```
-
+### Static Triple Junction Simulation
+- Boundary condition in x is set to be homogenous Neumann.
+```bash
+- mpiexec -n 4 ./PhaseFieldPet -bcx_neumann -snes_type ksponly  -ts_monitor
+```
 #### On a GPU (cuda based)
   ```bash
 - mpiexec -n 1 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256 -dm_mat_type aijcusparse -dm_vec_type cuda
