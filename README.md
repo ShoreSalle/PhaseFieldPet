@@ -80,8 +80,10 @@ Increase grid points to 256 x 256 x3
   ```bash
 - mpiexec -n 1 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256 -dm_mat_type aijcusparse -dm_vec_type cuda
   ```
-### For Developers
-If you have your own energy expressions (gradient , potential)  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case clause` in the stiff RHSIFunctionlocal() and RHSFunctionlocal.
+### For Developers*
+If you have your own energy expressions (gradient , potential)  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case clause` in the stiff `IRHSLocal()` and or non stiff terms in `RHSLocal()` functions in PhaseFieldPet.c. You can alse change the `InitialMicrostructure()` function in PhaseFieldPet.c  to suit other simulations than example triple junction application described here or read initial phase field data available from other software or experiment.
+#### Exercise
+- Include a constant driving force term to the triple junction example above. See [Hoffroge etal. 2025](https://doi.org/10.1088/1361-651X/ad8d6f) for help or contact us.
 
 
 
