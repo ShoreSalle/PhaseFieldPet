@@ -13,12 +13,12 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 
 ## Installation
 There are many ways to install PETSc. See [PETSc Installation](https://petsc.org/release/install/).
-#### From Linux Distribution Repository (older version)
+#### From Linux Distribution Repository ( older version )
 On debian based such as Ubuntu Linux for instance
   ```bash
   sudo apt install petsc-dev
   ```
-#### From Source (most updated versions)
+#### From Source ( most updated versions )
 Steps to install vary based on what softwares are available in the machine you are connected to. For instance on the system where gcc, g++, gfortran  are available , but not mpi implmentation or lapack, PETSc will install it for you following
 ```bash
   - git clone -b release https://gitlab.com/petsc/petsc.git petsc
