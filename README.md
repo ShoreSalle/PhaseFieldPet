@@ -26,7 +26,7 @@ Steps to install vary based on what softwares are available in the machine you a
   - ./configure --with-cc=gcc --with-cxx=g++ --with-fc=gfortran --download-mpich --download-fblaslapack
   - make all check
 ```
-If in addition you one has NVIDIA GPU with compute capability, add `--with-cuda`  in `./configure` above. Do similarly to kokkos , OpenMP or Pthread.
+If in addition you have NVIDIA GPU with compute capability, add `--with-cuda`  in `./configure` above. Do similarly to kokkos , OpenMP or Pthread.
 
 
 ## Compile your code mpf.c
