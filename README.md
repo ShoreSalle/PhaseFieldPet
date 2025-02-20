@@ -71,7 +71,7 @@ Increase grid points to 256 x 256 x3
 ```bash
 - mpiexec -n 80 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256
  ```
-### Static Triple Junction Simulation
+### Steady-state motion of triple junction 
 - Boundary condition in x is set to be homogenous Neumann.
 ```bash
 - mpiexec -n 4 ./PhaseFieldPet -bcx_neumann -snes_type ksponly  -ts_monitor
@@ -80,4 +80,9 @@ Increase grid points to 256 x 256 x3
   ```bash
 - mpiexec -n 1 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256 -dm_mat_type aijcusparse -dm_vec_type cuda
   ```
+### For Developers
+If you have your own energy expressions (gradient , potential)  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case clause` in the stiff RHSIFunctionlocal() and RHSFunctionlocal.
+
+
+
 
