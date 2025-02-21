@@ -81,7 +81,7 @@ Increase grid points to 256 x 256 x3
 - mpiexec -n 1 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256 -dm_mat_type aijcusparse -dm_vec_type cuda
   ```
 ### Steady-state motion of triple junction 
-- Boundary condition in x is set to be homogenous Neumann.
+- Boundary condition in x is set to be homogenous Neumann. All other options you have experimented above can also be added in steady-state case.
 ```bash
 - mpiexec -n 4 ./PhaseFieldPet -bcx_neumann -snes_type ksponly  -ts_monitor
 ```
