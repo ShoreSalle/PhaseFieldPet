@@ -42,7 +42,7 @@ If your system has mpi installed ( or available, say via `module load openmpi` i
 - Boundary condition in x direction is pinned.
 #### On CPU with n # mpi processes
 Solve with default time step solver set in the code (Adaptive Runge Kutta Implicit-Explicit) and see as time progress (`ts_monitor`).\
-( Note that  if you installed mpi implmentation with PETSc `mpiexec` or `mpirun` will be available in directory $PETSC_DIR/$PETSC_ARCH/bin/mpiexec`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc` ) and make an alias to mpiexec or put it in your $PATH variable for it to be available in every shell you open.)
+( Note that  if you installed mpi implmentation with PETSc `mpiexec` or `mpirun` will be available in directory `$PETSC_DIR/$PETSC_ARCH/bin/mpiexec`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc`) and make an alias to `mpiexec` or put it in your `$PATH` variable for it to be available in every shell you open.)
 
   ```bash
 - mpiexec -n 4 ./PhaseFieldPet -ts_monitor
