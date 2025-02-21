@@ -31,6 +31,8 @@ If your system has mpi installed ( or available, say via `module load openmpi` i
 ```bash
 - ./configure PETSC_ARCH=arch-optimized --with-debugging=0  COPTFLAGS='-O3 -march=native -mtune=native'  CXXOPTFLAGS='-O3  -mtune=native'  FOPTFLAGS='-O3 -march=native -mtune=native'  --download-fblaslapack --with-mpi-dir=/Path/to/your/MPI/Dir
 ```
+ Note that  if you installed mpi implmentation with PETSc `mpiexec` or `mpirun` will be available in directory `$PETSC_DIR/$PETSC_ARCH/bin/mpiexec`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc`) and make an alias to `mpiexec` or put it in your `$PATH` variable for it to be available in every shell you open.
+
 
 ## Compile your code mpf.c
   ```bash
@@ -41,9 +43,7 @@ If your system has mpi installed ( or available, say via `module load openmpi` i
 ### Static Triple Junction Simulation
 - Boundary condition in x direction is pinned.
 #### On CPU with n # mpi processes
-Solve with default time step solver set in the code (Adaptive Runge Kutta Implicit-Explicit) and see as time progress (`ts_monitor`).\
-( Note that  if you installed mpi implmentation with PETSc `mpiexec` or `mpirun` will be available in directory `$PETSC_DIR/$PETSC_ARCH/bin/mpiexec`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc`) and make an alias to `mpiexec` or put it in your `$PATH` variable for it to be available in every shell you open.)
-
+Solve with default time step solver set in the code (Adaptive Runge Kutta Implicit-Explicit) and see as time progress (`ts_monitor`).
   ```bash
 - mpiexec -n 4 ./PhaseFieldPet -ts_monitor
   ```
