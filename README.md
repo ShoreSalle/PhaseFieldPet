@@ -55,6 +55,10 @@ Use dot gradient formulation with obstacle potentials due to Steinbach
  ```bash
  - mpiexec -n 4 ./PhaseFieldPet -grad_dot  -pot_steinbach  -simplex
   ```
+Save output results approximately every 10 seconds (default is 100 seconds).
+ ```bash
+ - mpiexec -n 4 ./PhaseFieldPet -grad_dot  -pot_steinbach  -simplex -twrite 10
+  ```
 Change the underlying non linear  (Newton) solver  to one iteration
 ```bash
 - mpiexec  -n 4 ./PhaseFieldPet  -snes_type ksponly
