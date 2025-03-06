@@ -107,7 +107,7 @@ If you have your own energy expressions: gradient , potential  and bulk driving 
 # 3. License
 PhaseFieldPet is distributed under a 2-clause BSD license (as of PETSc).
 
-" PETSc is distributed under a 2-clause BSD license which allows for free use, modification, and distribution of the software. For full details, see the [PETSc license](https://petsc.org/release/install/license/#clause-bsd-license). " 
+" Copyright (c) 1991-2025, UChicago Argonne, LLC and the PETSc Developers and Contributors All rights reserved. PETSc is distributed under a 2-clause BSD license which allows for free use, modification, and distribution of the software. For full details, see the [PETSc license](https://petsc.org/release/install/license/#clause-bsd-license). " 
 
 
 
