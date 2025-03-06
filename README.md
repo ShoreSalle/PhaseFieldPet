@@ -105,7 +105,9 @@ If you have your own energy expressions: gradient , potential  and bulk driving 
 - Include your own gradient and/or  potential terms and solve the triple junction problem. Contact us if you need help.
 
 # 3. License
-PhaseFieldPet is distributed under a 2-clause BSD license (as of PETSc), which allows for free use, modification, and distribution of the software. For full details, see the [PETSc license](https://petsc.org/release/install/license/#clause-bsd-license).
+PhaseFieldPet is distributed under a 2-clause BSD license (as of PETSc).
+
+" PETSc is distributed under a 2-clause BSD license which allows for free use, modification, and distribution of the software. For full details, see the [PETSc license](https://petsc.org/release/install/license/#clause-bsd-license). " 
 
 
 
