@@ -9,7 +9,7 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
    - openMP (using third party package integration with petsc).
    - Pthread.
 
-## Video Demo
+#### Static Triple Junction animation
 
 [![Watch the video](Videos/static_triple_junction.png)](Videos/static_Triple_Junction.mp4)
 
