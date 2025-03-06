@@ -11,7 +11,7 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 
 ## Video Demo
 
-[![Watch the video](Videos/static_triple_junction.png)](Videos/static_Triple_Juntion.mp4)
+[Watch the video](Videos/static_triple_junction.png)](Videos/static_Triple_Juntion.mp4)
 
 # 1. How to use
   One can take  source code PhaseFieldPet.c, and compile and run it, visualize the results (default in vtk format) using visualizations softwares such as [ParaView](https://www.paraview.org/). The steps to download and install varies, but we give a general directions to do so here.
