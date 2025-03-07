@@ -72,11 +72,12 @@ This is Lagrangian based Multiphase-field model (`mpfl`), and is chosen in Phase
 
 $$\frac{\partial\phi_{\alpha}}{\partial t} = -\frac{1}{\tilde{N}\epsilon}\sum_{\beta\ne\alpha}^{\tilde{N}}M_{\alpha\beta}\left(\frac{\delta\mathcal F}{\delta\phi_{\alpha}}-\frac{\delta\mathcal F}{\delta\phi_{\beta}}\right),$$
 where $M_{\alpha\beta}$ is a mobility matrix. This Multiphase-field model (`mpf`), is chosen in PhaseFieldPet via `pfe_mpf`.
+
 We rerefer interested reader to @Daubner:2023, @Moelans:2008 and Chapter seven of the book by @Provatas:2010 for detailed overview of various phase field formulations and asscociated evolution equations.
 
 # Statement of need
 
-For the past couple of decades, phase field software has been being developed and used with  in house codes, and Open source phase field software started to be available from 2007 [@Hong:2020]. Many  existing open source softwares are limited to one or two spatial dimensions, focus on binary systems, use  only one  type time step solver (usually explicit time stepping), work only on one CPU core (serial code) or are not capable of using heterogeneous compute resources available such as GPUs  for compute and energy efficiency. Notable large scale, distributed computing capable open source phase field softwares that mainly targets CPUs include: The open source Multiphysics Object Oriented Simulation Environment (MOOSE) [@schwen2023phasefield:2017] - which  is a powerful toolset for implementing phase field models using the finite element method, PRISMS-PF - massively parallel finite element code for conducting phase field [@DeWitt:2020],   OpenPhase [@Tegeler:2017] uses  finite difference for spatial discretization, an explicit time stepping algorithm, MicroSim [@Dutta:2025]. Among proprietary, distributed machines capable software is a  Parallel Algorithms for Crystal Evolution in 3D (PACE3D)  [@Hötzer:2018] is a multiphase field software that uses explicit time stepping along with finite difference spatial discretizations. See table 1 below for comparisons of state of the art mpi based softwares for  Allen-Cahn  (and variations thereof) type phase field  model solvers with online tutorials available.
+For the past couple of decades, phase field software has been being developed and used with  in house codes, and Open source phase field software started to be available from 2007 [@Hong:2020]. Many  existing open source softwares are limited to one or two spatial dimensions, focus on binary systems, use  only one  type time step solver (usually explicit time stepping), work only on one CPU core (serial code) or are not capable of using heterogeneous compute resources available such as GPUs  for compute and energy efficiency. Notable large scale, distributed computing capable open source phase field softwares that mainly targets CPUs include: The open source Multiphysics Object Oriented Simulation Environment (MOOSE) [@schwen2023phasefield:2017] - which  is a powerful toolset for implementing phase field models using the finite element method, PRISMS-PF - massively parallel finite element code for conducting phase field [@DeWitt:2020],   OpenPhase [@Tegeler:2017] uses  finite difference for spatial discretization, an explicit time stepping algorithm, MicroSim [@Dutta:2025]. Among proprietary, distributed machines capable software is a  Parallel Algorithms for Crystal Evolution in 3D (PACE3D)  [@Hötzer:2018] is a multiphase field software that uses explicit time stepping along with finite difference spatial discretizations. Table 1 below gives a  comparison of state of the art software for  Allen-Cahn  (and variations thereof) type phase field  model solvers with online tutorial available, able to run on distributed - large scale hardware architectures.
 
 \begin{table}[h!]
 \centering
@@ -120,9 +121,6 @@ Here we report the strong scalabilty of PhaseFieldPet for simulation static trip
 <div style="text-align:center;">
 ![Log-Log Plot of Execution Time vs MPI Processes.\label{fig:example}](timing.png){ width=70% height=70%}
 </div>
-
-
-
 
 # Conclusions
 
