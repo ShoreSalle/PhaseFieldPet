@@ -65,9 +65,17 @@ Save output results approximately every 10 seconds (default is 100 seconds).
  ```bash
  - mpiexec -n 4 ./PhaseFieldPet -grad_dot  -pot_steinbach  -simplex -twrite 10
   ```
+Use multi-phase-field model (MPF)
+```bash
+- mpiexec  -n 4 ./PhaseFieldPet  -pot_steinbach -pfe_mpf -simpex -ts_monitor
+ ```
 Change the underlying non linear  (Newton) solver  to one iteration
 ```bash
 - mpiexec  -n 4 ./PhaseFieldPet  -snes_type ksponly
+ ```
+Use multi-order parameter model (MOP)
+```bash
+- mpiexec  -n 4 ./PhaseFieldPet  -grad_interpolated -pot_moelans -pfe_mop -snes_type ksponly -ts_monitor
  ```
 Use Matrix Free Non linear solver
 ```bash
@@ -77,11 +85,6 @@ Use Fully Implicit adaptive backward Differentiation Formula
 ```bash
 - mpiexec  -n 4 ./PhaseFieldPet  -ts_type bdf 
  ```
-Use interpolated formulation to grad and Multiorder-parameter simulation
-```bash
-- mpiexec -n 8 ./PhaseFieldPet -grad_interpolated -pfe_mop
- ```
-
 Increase grid points to 256 x 256 x3
 ```bash
 - mpiexec -n 80 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256
