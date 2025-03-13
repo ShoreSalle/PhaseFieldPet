@@ -105,7 +105,7 @@ All other options that have experimented in static triple junction can also be a
 ```
 All other options that have experimented in static triple junction can also be added here. NB, this term will be responsible for various other applications (thermal, chemical, mechanical,...) keeping the gradient and potential terms fixed. 
 
-## 2. For Developers
+# 2. For Developers
 If you have your own energy expressions: gradient , potential  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case` clause in the stiff `IRHSLocal()` and or non stiff terms in `RHSLocal()` functions in PhaseFieldPet.c. You can also change the `InitialMicrostructure()` function in PhaseFieldPet.c  to suit other simulations than example triple junction application described here or read initial phase field data available from other software or experimental data.
 #### 2.1 Exercise
 - Include your own gradient and/or  potential terms and solve the triple junction problem. Contact us if you need help.
