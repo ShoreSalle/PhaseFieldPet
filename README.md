@@ -1,13 +1,12 @@
 # PhaseFieldPet
-PhaseFieldPet is an open-source phase-field simulation software for heterogeneous architectures (such as CPUs and GPUs). It is built on top of [PETSc](https://petsc.org/release/), and hence wide variety of numerical solvers are available at run time. PhaseFieldPet software simulates multiphase-field models ( phase-field variables are restricted between 0 and 1, the sum over all phase field variables is one. In PhaseFieldPet these are chosed by either  `pfe_mpfl` or `pfe_mpf`) and  multi-order parameter models (also called continuum field models, where order parameters are not conserved, `pfe_mop`).
-In its current version (v1.0.0), PhaseFieldPet comes with three gradient energy terms (`grad_dot`, `grad_weighted`, `grad_interpolated`) and five potential energy terms (`pot_toth`, `pot_moelans`, `pot_garacke`,`pot_nestler`, `pot_steinbach`). The first three are well potentials, while the last two are obstacle potentials.  Not all combinations give a phsicaly sound simulation, so the user has to experiment with combinations and reason out why. For explanations of these terms and the phase field equation as presented in PhaseFieldPet, see the associated paper to this code [Chota et al., 2025](paper/paper.pdf). For further details we encourage readers to see our previous papers [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995)
-and [Hoffrogge et al.,2025](https://iopscience.iop.org/article/10.1088/1361-651X/ad8d6f).
+PhaseFieldPet is an open-source phase-field simulation software for heterogeneous architectures (such as CPUs and GPUs). It is built on top of [PETSc](https://petsc.org/release/), and hence wide variety of numerical solvers are available at run time. PhaseFieldPet software simulates multiphase-field models (`pfe_mpfl` or `pfe_mpf`) and  multi-order parameter models, also called continuum field models (`pfe_mop`).
+In its current version (v1.0.0), PhaseFieldPet comes with three gradient energy terms (`grad_dot`, `grad_weighted`, `grad_interpolated`), five potential energy terms (`pot_toth`, `pot_moelans`, `pot_garacke`,`pot_nestler`, `pot_steinbach`) and three driving forces (`bulk_b0`,`bulk_b1`,`bulk_b2`). Not all combinations give a phsicaly sound simulation, so the user has to experiment with combinations and reason out why. For brief description of PhaseFieldPet, see the associated paper [Chota et al., 2025](paper/paper.pdf). For further details and explanations regarding gradient energy terms, potential energy terms and the phase field equation as presented in PhaseFieldPet, we encourage readers to see the paper [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995). For explanations  and expressions of bulk driving force as used in PhaseFieldPet, see [Hoffrogge et al., 2025](https://iopscience.iop.org/article/10.1088/1361-651X/ad8d6f).
 
 PhaseFieldPet runs on wide variety of hardware and it supports:
-   - MPI Based (distributed computing capability by default).
-   - GPUs ( NVIDIA, AMD): CUDA, HIP, Kokkos, openCL
-   - OpenMP (using third party package integration with petsc).
-   - Pthread.
+   - Multicore, Multinode CPUs via MPI (distributed computing capability by default).
+   - GPUs ( NVIDIA, AMD): via CUDA, HIP, Kokkos, openCL.
+   - Multicore CPUs via OpenMP (using third party package integration with petsc).
+   - Pthreads.
 
 #### Static Triple Junction animation
 
