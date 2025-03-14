@@ -95,7 +95,7 @@ PhaseFieldPet is a finite difference method (FDM) based software built on top of
 
 # Usage
 To use PhaseFieldPet, PETSc [@petsc-web-page:2024] needs to be installed, compiled using\
-     &nbsp;&nbsp;&nbsp; `make PhaseFieldPet`\
+     &nbsp;&nbsp;&nbsp; `make PhaseFieldPet`,\
 run the executable generated with `mpiexec`/`mpirun`/`srun` or similar other tools. For example using mpiexec with 4 mpi processes:\
      &nbsp;&nbsp;&nbsp; `mpiexec -n 4 PhaseFieldPet [options]`,\
 where options can be various gradient, potential, bulk energy contributions or numerical methods used to solve.
