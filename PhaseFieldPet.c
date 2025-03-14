@@ -42,8 +42,7 @@ static char help[] = "Solves Phase Field Equation in 3D by Finite Difference Met
     - mpiexec -n 4 ./PhaseFieldPet -simplex
     - mpiexec -n 4 ./PhaseFieldPet -pfe_mpf -simplex
     - mpiexec -n 4 ./PhaseFieldPet -grad_weighted  -pot_nestler  -simplex
-    - mpiexec -n 4 ./PhaseFieldPet -grad_dot  -pot_steinbach  -simplex
-    - mpiexec -n 8 ./PhaseFieldPet -grad_interpolated -pfe_mop
+    - mpiexec -n 4 ./PhaseFieldPet -pot_steinbach  -simplex
 
     Solver related options example
     - mpiexec  -n 4 ./PhaseFieldPet  -snes_type ksponly
