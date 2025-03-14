@@ -9,12 +9,11 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
    - Pthreads.
 
 ## Table of Contents
-
 - [Introduction](#phasefieldpet)
 - [Usage](#1-usage)
    - [Installation](#11-installation)
        - [From Linux Distribution Repository ( older version )](#111-from-linux-distribution-repository-older-version)
-       - [From Source ( most updated versions )](#112-from-source-most-updated-versions)
+       - [From Source (most updated version )](#112-from-source-most-updated-versions)
    - [Compile the code](#12-compile-the-code)
    - [Run your simulation](#13-run-your-simulation)
        - [Static Triple Junction ](#131-static-triple-junction-simulation)
