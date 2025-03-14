@@ -1,9 +1,13 @@
 static char help[] = "Solves Phase Field Equation in 3D by Finite Difference Method using IMEX scheme \n" ;
 
-/*===========================================================================
+/*==========================================================================
+                                Shore Salle
+                           shore.chota@partner.kit.edu
+                                 March 2025
+ ===========================================================================
  The Phase Field Equation (pfe):
 
-     dphi_alpha/dt = Gradient term + Potential term + Driving Force term = RHS
+     d phi_a/dt = Gradient term + Potential term + Driving Force term = RHS
 
      See the associated paper to this code (Chota et al 2025,...) for mathematical expressions of RHS
 
@@ -46,7 +50,7 @@ static char help[] = "Solves Phase Field Equation in 3D by Finite Difference Met
     - mpiexec  -n 4 ./PhaseFieldPet  -snes_mf -snes_type ksponly
     - mpiexec  -n 4 ./PhaseFieldPet  -ts_type bdf
     - mpiexec  -n 1 ./PhaseFieldPet  -dm_mat_type aijcusparse -dm_vec_type cuda
-=============================================================================*/
+/=============================================================================*/
 
 #include "petsc.h"
 
@@ -58,9 +62,9 @@ typedef struct {
 
 typedef struct {
    PetscInt    nx, ny, nz;
-   PetscReal   x_ref, O_ref, Lx, Ly,Lz, dx, dy, dz, eps, mab, K;
+   PetscReal   x_ref, O_ref, Lx, Ly,Lz, dx, dy, dz, mab, K;
 
-   PetscReal   k[np][np], O[np][np],O_abc[np][np][np], M0, dx_inv, dy_inv,dz_inv, dx_sq_inv, dy_sq_inv,dz_sq_inv;
+   PetscReal   eps_inv, k[np][np], O[np][np],O_abc[np][np][np], M0, dx_inv, dy_inv,dz_inv, dx_sq_inv, dy_sq_inv,dz_sq_inv;
    PetscInt    twrite, pot, grad, pfe, bulk;
    PetscBool   pfe_mpf, pfe_mpfl, pfe_mop, grad_dot, grad_weighted, grad_interpolated, pot_toth,
                pot_moelans, pot_steinbach,pot_nestler, pot_garacke, bcx_neumann, bcy_dirichilet, simplex,
@@ -85,23 +89,23 @@ int main(int argc,char **argv) {
    Vec            x;
    DM             da;
    DMDALocalInfo  info;
-   PetscReal      dx, dy, dz, eps_fact;
+   PetscReal      dx, dy, dz, eps, eps_fact;
 
-
-   InitParameters(&user);
-
+   PetscFunctionBeginUser;
    PetscInitialize(&argc, &argv, NULL, help);
 
-     DMDACreate3d(PETSC_COMM_WORLD,DM_BOUNDARY_NONE, DM_BOUNDARY_NONE,DM_BOUNDARY_PERIODIC, DMDA_STENCIL_STAR,
-               user.nx, user.ny, user.nz, PETSC_DECIDE, PETSC_DECIDE, 1, np, 1, NULL,NULL,NULL, &da);
-     DMSetFromOptions(da);
-     DMSetUp(da);
-     DMDASetFieldName(da,0,"phi_1");
-     DMDASetFieldName(da,1,"phi_2");
-     DMDASetFieldName(da,2,"phi_3");
-     DMDASetUniformCoordinates(da, 0, user.Lx, 0, user.Ly, 0.0, user.Lz);
+     InitParameters(&user);
 
-     DMDAGetLocalInfo(da,&info);
+     PetscCall(DMDACreate3d(PETSC_COMM_WORLD,DM_BOUNDARY_NONE, DM_BOUNDARY_NONE,DM_BOUNDARY_PERIODIC, DMDA_STENCIL_STAR,
+               user.nx, user.ny, user.nz, PETSC_DECIDE, PETSC_DECIDE, 1, np, 1, NULL,NULL,NULL, &da));
+     PetscCall(DMSetFromOptions(da));
+     PetscCall(DMSetUp(da));
+     PetscCall(DMDASetFieldName(da,0,"phi_1"));
+     PetscCall(DMDASetFieldName(da,1,"phi_2"));
+     PetscCall(DMDASetFieldName(da,2,"phi_3"));
+     PetscCall(DMDASetUniformCoordinates(da, 0, user.Lx, 0, user.Ly, 0.0, user.Lz));
+
+     PetscCall(DMDAGetLocalInfo(da,&info));
      dx             = user.Lx /(info.mx-1);
      dy             = user.Ly /(info.my-1);
      dz             = user.Lz / info.mz   ;
@@ -113,102 +117,103 @@ int main(int argc,char **argv) {
      user.dz_sq_inv = 1.0/(dz*dz);
      eps_fact       = 5.0 ;   /* 4.8634 */
 
-     PetscOptionsGetReal(NULL,NULL,"-eps_fact",    &eps_fact   , NULL);
-     user.eps         = eps_fact*dx;
-     user.twrite      = 100;
-     PetscOptionsGetInt (NULL,NULL,"-twrite", &user.twrite, NULL);
-
-     user.pot_toth = PETSC_TRUE;
-     user.pot = 0;
-     PetscOptionsGetBool(NULL,NULL,"-pot_toth"     ,  &user.pot_toth      , NULL);
-     user.pot_moelans = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-pot_moelans"  ,  &user.pot_moelans   , NULL);
-     if (user.pot_moelans) { user.pot = 1;}
-     user.pot_garacke = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-pot_garacke"  ,  &user.pot_garacke   , NULL);
-     if (user.pot_garacke) { user.pot = 2;}
-     user.pot_steinbach = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-pot_steinbach",  &user.pot_steinbach , NULL);
-     if (user.pot_steinbach){ user.K = 16.0/(PETSC_PI*PETSC_PI); user.pot = 3;}
-     user.pot_nestler = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-pot_nestler",  &user.pot_nestler     , NULL);
-     if (user.pot_nestler){ user.K = 16.0/(PETSC_PI*PETSC_PI);user.pot = 4;}
-
-     InitParamRHS(user.eps, &user);
+     PetscCall(PetscOptionsGetReal(NULL,NULL,"-eps_fact", &eps_fact   , NULL));
+     eps            = eps_fact*dx;
+     user.eps_inv   = 1.0/eps;
+     user.twrite    = 100;
+     PetscCall(PetscOptionsGetInt (NULL,NULL,"-twrite",   &user.twrite, NULL));
 
      user.grad_dot = PETSC_TRUE;
      user.grad = 0;
-     PetscOptionsGetBool(NULL,NULL,"-grad_dot"         ,  &user.grad_dot         , NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-grad_dot"        ,  &user.grad_dot         , NULL));
      user.grad_weighted = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-grad_weighted"    ,  &user.grad_weighted    , NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-grad_weighted"   ,  &user.grad_weighted    , NULL));
      if (user.grad_weighted)  { user.grad = 1;}
      user.grad_interpolated = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-grad_interpolated" , &user.grad_interpolated, NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-grad_interpolated", &user.grad_interpolated, NULL));
      if (user.grad_interpolated)  { user.grad = 2;}
 
-     user.M0 = user.mab/user.eps;
-     user.pfe_mpfl=PETSC_TRUE;
-     user.pfe = 0;
-     PetscOptionsGetBool(NULL,NULL,"-pfe_mpfl"     ,  &user.pfe_mpfl      , NULL);
-     user.pfe_mpf = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-pfe_mpf"      ,  &user.pfe_mpf       , NULL);
-     if ( user.pfe_mpf) { user.pfe = 1; user.M0 = user.mab/(np*user.eps);}
-     user.pfe_mop =PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-pfe_mop"      ,  &user.pfe_mop       , NULL);
-     if ( user.pfe_mop) { user.pfe = 2;}
+     user.pot_toth = PETSC_TRUE;
+     user.pot = 0;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pot_toth"     ,  &user.pot_toth      , NULL));
+     user.pot_moelans = PETSC_FALSE;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pot_moelans"  ,  &user.pot_moelans   , NULL));
+     if (user.pot_moelans) { user.pot = 1;}
+     user.pot_garacke = PETSC_FALSE;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pot_garacke"  ,  &user.pot_garacke   , NULL));
+     if (user.pot_garacke) { user.pot = 2;}
+     user.pot_steinbach = PETSC_FALSE;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pot_steinbach",  &user.pot_steinbach , NULL));
+     if (user.pot_steinbach){ user.K = 16.0/(PETSC_PI*PETSC_PI); user.pot = 3;}
+     user.pot_nestler = PETSC_FALSE;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pot_nestler",  &user.pot_nestler     , NULL));
+     if (user.pot_nestler){ user.K = 16.0/(PETSC_PI*PETSC_PI);user.pot = 4;}
 
      user.bulk = 0;
      user.bulk_b0 = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-bulk_b0"     ,  &user.bulk_b0        , NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-bulk_b0"     ,  &user.bulk_b0        , NULL));
      if ( user.bulk_b0) { user.bulk = 1;}
      user.bulk_b1 = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-bulk_b1"     ,  &user.bulk_b1        , NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-bulk_b1"     ,  &user.bulk_b1        , NULL));
      if ( user.bulk_b1) { user.bulk = 2;}
      user.bulk_b2 = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-bulk_b2"     ,  &user.bulk_b2        , NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-bulk_b2"     ,  &user.bulk_b2        , NULL));
      if ( user.bulk_b2) { user.bulk = 3;}
 
+     InitParamRHS(eps, &user);
+
+     user.M0 = user.mab/(np*eps);
+     user.pfe_mpfl=PETSC_TRUE;
+     user.pfe = 0;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pfe_mpfl"     ,  &user.pfe_mpfl      , NULL));
+     user.pfe_mpf = PETSC_FALSE;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pfe_mpf"      ,  &user.pfe_mpf       , NULL));
+     if ( user.pfe_mpf) { user.pfe = 1; ;}
+     user.pfe_mop =PETSC_FALSE;
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-pfe_mop"      ,  &user.pfe_mop       , NULL));
+     if ( user.pfe_mop) { user.pfe = 2, user.M0 = user.mab/eps;}
+
      user.bcx_neumann = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-bcx_neumann"   ,    &user.bcx_neumann, NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-bcx_neumann"   ,    &user.bcx_neumann, NULL));
      user.bcy_dirichilet = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-bcy_dirichilet", &user.bcy_dirichilet, NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-bcy_dirichilet", &user.bcy_dirichilet, NULL));
 
-     TSCreate(PETSC_COMM_WORLD,&ts);
-     TSSetProblemType(ts,TS_NONLINEAR);
-     TSSetDM(ts,da);
-     TSSetApplicationContext(ts,&user);
+     PetscCall(TSCreate(PETSC_COMM_WORLD,&ts));
+     PetscCall(TSSetProblemType(ts,TS_NONLINEAR));
+     PetscCall(TSSetDM(ts,da));
+     PetscCall(TSSetApplicationContext(ts,&user));
 
-     DMDATSSetRHSFunctionLocal(da,INSERT_VALUES, (DMDATSRHSFunctionLocal)RHSLocal ,&user);
-     DMDATSSetIFunctionLocal  (da,INSERT_VALUES, (DMDATSIFunctionLocal)IRHSLocal  ,&user);
+     PetscCall(DMDATSSetRHSFunctionLocal(da,INSERT_VALUES, (DMDATSRHSFunctionLocal)RHSLocal ,&user));
+     PetscCall(DMDATSSetIFunctionLocal  (da,INSERT_VALUES, (DMDATSIFunctionLocal)IRHSLocal  ,&user));
 
-     TSSetType(ts,TSARKIMEX);
-     TSSetTime(ts,0.0);              //to
-     TSSetMaxTime(ts,3500.0);        //tf
-     TSSetMaxSteps(ts,1e9);          //iter
-     TSSetTimeStep(ts,0.1);          //dt
-     TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP);
+     PetscCall(TSSetType(ts,TSARKIMEX));
+     PetscCall(TSSetTime(ts,0.0));              //to
+     PetscCall(TSSetMaxTime(ts,3500.0));        //tf
+     PetscCall(TSSetMaxSteps(ts,1e9));          //iter
+     PetscCall(TSSetTimeStep(ts,0.1));          //dt
+     PetscCall(TSSetExactFinalTime(ts,TS_EXACTFINALTIME_MATCHSTEP));
 
-     DMCreateGlobalVector(da,&x);
+     PetscCall(DMCreateGlobalVector(da,&x));
 
      user.simplex = PETSC_FALSE;
-     PetscOptionsGetBool(NULL,NULL,"-simplex", &user.simplex, NULL);
+     PetscCall(PetscOptionsGetBool(NULL,NULL,"-simplex", &user.simplex, NULL));
      if (user.simplex){
-        TSSetPostStep(ts, ApplySimplex);
-        TSRestartStep(ts);
+        PetscCall(TSSetPostStep(ts, ApplySimplex));
+        PetscCall(TSRestartStep(ts));
      }
 
-     TSMonitorSet(ts, WriteOutput, &user, NULL);
+     PetscCall(TSMonitorSet(ts, WriteOutput, &user, NULL));
 
-     TSSetFromOptions(ts);
+     PetscCall(TSSetFromOptions(ts));
 
-     InitialMicroStructure(da, x, &user);
+     PetscCall(InitialMicroStructure(da, x, &user));
 
-     TSSolve(ts,x);
+     PetscCall(TSSolve(ts,x));
 
-     VecDestroy(&x);
-     TSDestroy(&ts);
-     DMDestroy(&da);
-   PetscFinalize();
+     PetscCall(VecDestroy(&x));
+     PetscCall(TSDestroy(&ts));
+     PetscCall(DMDestroy(&da));
+   PetscCall(PetscFinalize());
    return 0;
 }
 
@@ -230,7 +235,7 @@ void InitParameters(Param* user) {
      h     = 100e-6;  // [100,400]e-6
      l     = 1e-6  ;
      M_ab  = 1e-14 ;
-    /* gamma[l][m]   see below*/
+    /* gamma[l][m]   see under InitParamRHS*/
 
    /* Non dimensionalizing factors [s],[m] and [J/m3] */
      t_ref       = 100;
@@ -246,23 +251,24 @@ void InitParameters(Param* user) {
 
 void InitParamRHS(PetscReal eps, Param* user) {
 
-    PetscReal gamma[np][np], g[np][np];
+    PetscReal gamma[np][np];
+    PetscInt  n;
 
     for (int l=0; l< np; l++){
+       gamma[l][0] = 1.0;                                           /* gamma_a0 in SI unit*/
        for (int m=0; m< np; m++){
           if (m==l){
               continue;
           }
-          gamma[l][0] = 1.0;                         /* in SI , gamma_a0 */
           if (m != 0){
-              gamma[l][m] = 1.0 * gamma[l][0];        /* gamma_ab = [0.1, 2.0] * gamma_a0 */
+              gamma[l][m] = 1.0 * gamma[l][0];                      /* gamma_ab = [0.1, 2.0] * gamma_a0 */
           }
-          g[l][m]     = gamma[l][m]/(user->O_ref*user->x_ref);
+          gamma[l][m]     = gamma[l][m]/(user->O_ref*user->x_ref);  /* gamma_ab non dimensionalized*/
 
-          /* RHS parameters  */
-          user->k[l][m]   =  eps*g[l][m];
-          user->O[l][m]   =  user->K*g[l][m]/eps;
-          for (int n = m+1; n< np; n++){
+          /* RHS parameters */
+          user->k[l][m]   =  eps*gamma[l][m];
+          user->O[l][m]   =  user->K*gamma[l][m]/eps;
+          for ( n = m+1; n< np; n++){
               user->O_abc[l][m][n] =  0.01*user->O[l][m];
           }
        }
@@ -281,12 +287,12 @@ PetscErrorCode  InitialMicroStructure(DM da, Vec Y, Param* user) {
    Field            ***aY;
 
    PetscFunctionBeginUser;
-   VecSet(Y,0.0);
-   if(user->pfe_mop){ VecSet(Y,0.000001);}
+   PetscCall(VecSet(Y,0.0));
+   if(user->pfe_mop){ PetscCall(VecSet(Y,0.000001));}
 
-   DMDAGetLocalInfo(da,&info);
-   DMDAGetCoordinateArray(da,&aC);
-   DMDAVecGetArray(da,Y,&aY); //  DMDAVecGetArrayWrite(da,Y,&aY);
+   PetscCall(DMDAGetLocalInfo(da,&info));
+   PetscCall(DMDAGetCoordinateArray(da,&aC));
+   PetscCall(DMDAVecGetArray(da,Y,&aY)); //  DMDAVecGetArrayWrite(da,Y,&aY);
    for (k = info.zs; k < info.zs + info.zm; k++) {
      for (j = info.ys; j < info.ys+info.ym; j++) {
         for (i = info.xs; i < info.xs+info.xm; i++) {
@@ -302,8 +308,8 @@ PetscErrorCode  InitialMicroStructure(DM da, Vec Y, Param* user) {
         }
      }
    }
-   DMDAVecRestoreArray(da,Y,&aY);
-   DMDARestoreCoordinateArray(da,&aC);
+   PetscCall(DMDAVecRestoreArray(da,Y,&aY));
+   PetscCall(DMDARestoreCoordinateArray(da,&aC));
 
    PetscFunctionReturn(PETSC_SUCCESS);
 }
@@ -315,8 +321,9 @@ PetscErrorCode  InitialMicroStructure(DM da, Vec Y, Param* user) {
   PetscErrorCode IRHSLocal(DMDALocalInfo *info, PetscReal t,Field ***aY, Field ***aYdot, Field ***aF, Param *user) {
 
   PetscInt       i, j,k, l,m, mx = info->mx, my = info->my;
-  PetscReal      ul,ur,ut,ub,ufr, uba, dFgrad_dphi[np], PhibSq, sumSquares,khat,laplace[np], grad_phix[np],grad_phiy[np],
-                 grad_phiz[np],dkhat_dphi, rhs1, GradSquare, sumGradSquare, grad_kx, grad_ky,grad_kz, PhiaSq;
+  PetscReal      ul,ur,ut,ub,ufr, uba, dFgrad_dphi[np], PhibSq, sumSquares,khat,laplace[np], grad_phix[np],
+                 grad_phiy[np],grad_phiz[np],dkhat_dphi, rhs1, GradSquare, sumGradSquare, grad_kx, grad_ky,
+                 grad_kz, PhiaSq, dFgrad_dphi_lmsum;
 
   PetscFunctionBeginUser;
   for (k = info->zs; k < info->zs + info->zm; k++) {
@@ -436,17 +443,26 @@ PetscErrorCode  InitialMicroStructure(DM da, Vec Y, Param* user) {
                    break;
            }
 
+           /* Phase Field Equation, Stiff Part */
+
            for (l = 0; l < np; l++) { // alpha
               switch (user->pfe){
-                   case 1:
-                      aF[k][j][i].phi[l]  = aYdot[k][j][i].phi[l] + user->M0 *( np*dFgrad_dphi[l] -   rhs1   ); // MPF
-                      break;
-                   case 2:
-                      aF[k][j][i].phi[l]  = aYdot[k][j][i].phi[l] + user->M0 *(    dFgrad_dphi[l]           );  // MOP
-                      break;
-                   default:
-                      aF[k][j][i].phi[l]  = aYdot[k][j][i].phi[l] + user->M0 *(    dFgrad_dphi[l] -(rhs1/np)) ; // MPFL
-                      break;
+                   case 1:                                                                                         // MPF
+                       dFgrad_dphi_lmsum = 0.0;
+                       for (m = 0; m < np; m++) { // alpha
+                           if (m==l) {
+                               continue;
+                           }
+                           dFgrad_dphi_lmsum  += dFgrad_dphi[l] - dFgrad_dphi[m];
+                       }
+                       aF[k][j][i].phi[l]  =  aYdot[k][j][i].phi[l] + user->M0 * dFgrad_dphi_lmsum;
+                       break;
+                   case 2:                                                                                         // MOP
+                       aF[k][j][i].phi[l]  =  aYdot[k][j][i].phi[l] + user->M0 *(    dFgrad_dphi[l]        );
+                       break;
+                   default:                                                                                        // MPFL
+                       aF[k][j][i].phi[l]  =  aYdot[k][j][i].phi[l] + user->M0 *( np*dFgrad_dphi[l] - rhs1) ;
+                       break;
               }
            }
 
@@ -457,13 +473,14 @@ PetscErrorCode  InitialMicroStructure(DM da, Vec Y, Param* user) {
 }
 
    /*================================================================================================*/
-   /*                           Well / Obstacle Potentials , Driving Force                           */
+   /*                           Well , Obstacle Potentials  and  Driving Force                           */
    /*================================================================================================*/
 
 PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***aG, Param *user) {
 
   PetscInt       i, j,k,l,m,n;
-  PetscReal      PhiaSq, last, dFpot_dphi[np], PhibSq, sumSquares, Ohat,first, dOhat_dphi,rhs2,df_bulk, bulk_force[np];
+  PetscReal      PhiaSq, last, dFpot_dphi[np], PhibSq, sumSquares, Ohat,first, dOhat_dphi,rhs2,
+                 df_bulk, bulk_force[np], dFpot_dphi_lmsum;
 
   PetscFunctionBeginUser;
   for (k = info->zs; k < info->zs + info->zm; k++) {
@@ -472,7 +489,7 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
 
            Ohat       = 0.0;
            sumSquares = 0.0;
-           if ( user->pot_moelans || user->pot_toth ){
+           if ( user->pot == 0 || user->pot==1 ){           /* pot_toth || pot_moelans */
                //Ohat =0.0; khat =0.0; sumSquares = 0.0;
                for (int l = 0; l < np; l++) {
                    PhiaSq = aY[k][j][i].phi[l]*aY[k][j][i].phi[l];
@@ -486,7 +503,7 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
                Ohat = Ohat/sumSquares;
            }
 
-           rhs2 =0.0;
+           rhs2 = 0.0;
            switch (user->pot) {
               case 1: /* Well Pot - Moelans */
                    for (l = 0; l < np; l++) { // alpha
@@ -497,7 +514,7 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
                             if (m==l) {
                                continue;
                             }
-                            PhibSq       =  aY[k][j][i].phi[m]*aY[k][j][i].phi[m]; // if pot is separate , remove this.
+                            PhibSq       =  aY[k][j][i].phi[m]*aY[k][j][i].phi[m];
                             first       +=  user->O[l][m] * PhibSq ;
                             dOhat_dphi  +=  2.0 * aY[k][j][i].phi[l] * (user->O[l][m] - Ohat)* PhibSq ;
                         }
@@ -562,7 +579,7 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
                             if (m==l) {
                                continue;
                             }
-                            PhibSq       =  aY[k][j][i].phi[m]*aY[k][j][i].phi[m]; // if pot is separate , remove this.
+                            PhibSq       =  aY[k][j][i].phi[m]*aY[k][j][i].phi[m];
                             first       +=  user->O[l][m] * PhibSq ;
                             dOhat_dphi  +=  2.0 * aY[k][j][i].phi[l] * (user->O[l][m] - Ohat)* PhibSq ;
                         }
@@ -576,6 +593,7 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
            }
 
            /* Bulk Driving Force*/
+
            for (l = 0; l < np; l++) { // alpha
               bulk_force[l] = 0.0;
               if (user->bulk) {
@@ -583,7 +601,7 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
                         if (m==l){
                            continue;
                         }
-                        /*sqrt(phia*phib) ~= 0.5*(1.0 + phia*phib) */
+                        /* sqrt(phia*phib) ~= 0.5*(1.0 + phia*phib) */
                         switch (user->bulk){
                            case 1:
                                bulk_force[l] +=  1.0 + aY[k][j][i].phi[l]*aY[k][j][i].phi[m];                                            // B0
@@ -599,24 +617,36 @@ PetscErrorCode RHSLocal(DMDALocalInfo *info, PetscReal t, Field ***aY, Field ***
                                break;
                        }
                    }
-                   df_bulk = 2.0/user->eps;  // choose df_bulk: phat_pf = etta*df_bulk/gamma0 = [-2,2]
-                   bulk_force[l] *= 0.5*PETSC_PI*df_bulk;
+                   df_bulk = 0.1*user->eps_inv;  /* choose df_bulk: phat_pf = etta*df_bulk/gamma0 = [-2,2] */
+                   bulk_force[l]    = PETSC_PI*bulk_force[l]*df_bulk;
+
+                   if (user->pfe != 1){
+                      rhs2           += bulk_force[l];
+                      /* Nonstiff RHS = dFpot_dphi    + dFbulk_dphi */
+                      dFpot_dphi[l]   = dFpot_dphi[l] + bulk_force[l];
+                   }
               }
            }
 
+           /* Phase Field Equation, Nonstiff part */
 
            for (l = 0; l < np; l++) { // alpha
               switch (user->pfe){
-                   case 1:
-                   //aG[k][j][i].phi[l]  = - user->M0 *( np*dFpot_dphi[l]  -    rhs2 );  // MPF
-                     aG[k][j][i].phi[l]  = - user->M0 *( np*dFpot_dphi[l]  -    rhs2  - np*bulk_force[l]);  // MPF
-
+                   case 1:                                                                          // MPF
+                       dFpot_dphi_lmsum = 0.0;
+                       for (m = 0; m < np; m++) { // alpha
+                           if (m==l) {
+                               continue;
+                           }
+                           dFpot_dphi_lmsum  += dFpot_dphi[l] - dFpot_dphi[m];
+                       }
+                       aG[k][j][i].phi[l]  = - user->M0 * (dFpot_dphi_lmsum  + np*bulk_force[l]);
                        break;
-                   case 2:
-                       aG[k][j][i].phi[l]  = - user->M0 *(    dFpot_dphi[l]            );  // MOP
+                   case 2:                                                                          // MOP
+                       aG[k][j][i].phi[l]  = - user->M0 * dFpot_dphi[l];
                        break;
-                   default:
-                       aG[k][j][i].phi[l]  = - user->M0 *(    dFpot_dphi[l] - (rhs2/np));  // MPFL
+                   default:                                                                         // MPFL
+                       aG[k][j][i].phi[l]  = - user->M0 * ( np* dFpot_dphi[l] - rhs2);
                        break;
               }
            }
@@ -642,16 +672,16 @@ PetscErrorCode WriteOutput(TS ts, PetscInt step, PetscReal crtime, Vec x, void *
     PetscFunctionBeginUser;
     if (crtime >= next_write_time) {
         sprintf(filename, "phi_%.0f.vts", crtime);
-        PetscViewerVTKOpen(PETSC_COMM_WORLD,filename,FILE_MODE_WRITE,&viewer);
-        VecView(x,viewer);
-        PetscViewerDestroy(&viewer);
+        PetscCall(PetscViewerVTKOpen(PETSC_COMM_WORLD,filename,FILE_MODE_WRITE,&viewer));
+        PetscCall(VecView(x,viewer));
+        PetscCall(PetscViewerDestroy(&viewer));
         next_write_time = crtime + user->twrite;
     }
     PetscFunctionReturn(PETSC_SUCCESS);
 }
 
    /*===============================================================================================*/
-   /*                            Limit Phase Fields to Gibbs Simplex                                */
+   /*                            Limit Phase-Field to Gibbs Simplex                                */
    /*===============================================================================================*/
 
 PetscErrorCode ApplySimplex(TS ts){
@@ -664,10 +694,10 @@ PetscErrorCode ApplySimplex(TS ts){
     PetscReal       sumphi;
 
     PetscFunctionBeginUser;
-    TSGetSolution(ts, &Y);
-    TSGetDM(ts, &da);
-    DMDAGetLocalInfo(da, &info);
-    DMDAVecGetArray(da, Y, &u);
+    PetscCall(TSGetSolution(ts, &Y));
+    PetscCall(TSGetDM(ts, &da));
+    PetscCall(DMDAGetLocalInfo(da, &info));
+    PetscCall(DMDAVecGetArray(da, Y, &u));
     for ( k = info.zs; k < info.zs + info.zm; k++) {
         for ( j = info.ys; j < info.ys + info.ym; j++) {
            for ( i = info.xs; i < info.xs + info.xm; i++) {
@@ -682,7 +712,7 @@ PetscErrorCode ApplySimplex(TS ts){
            }
         }
     }
-    DMDAVecRestoreArray(da, Y, &u);
+    PetscCall(DMDAVecRestoreArray(da, Y, &u));
     PetscFunctionReturn(PETSC_SUCCESS);
 }
 
