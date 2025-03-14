@@ -126,10 +126,9 @@ All other options that have experimented in static triple junction can also be u
 
 # 2. Example Performance Result 
 
-Strong scalabilty of PhaseFieldPet is achieved for simulations of static triple junctions for results in the paper.
-
-
-This results is obtaine on Meggie cluster at  NHR@FAU obtained by running up  to 80 mpi processes on four compute nodes,  where each node has two Intel Xeon E5-2630v4 “Broadwell” chips (10 cores per chip) running at 2.2 GHz with 25 MB Shared Cache per chip and 64 GB of RAM. The result indicates excellent agreement with ideal expectations that the log-log plot is a straight line with slope of -1.
+Strong scalabilty of PhaseFieldPet is achieved for simulations of static triple junctions for example simulation result in the paper. See image below for log-plot plot of execution time vs MPI processes. The result indicates excellent agreement with ideal expectations that the log-log plot is a straight line with slope of -1.  
+          ![StrongScalability test of PhaseFieldPet](Results/timing.png)\
+This results is obtaine on Meggie cluster at  NHR@FAU obtained by running up  to 80 mpi processes on four compute nodes,  where each node has two Intel Xeon E5-2630v4 “Broadwell” chips (10 cores per chip) running at 2.2 GHz with 25 MB Shared Cache per chip and 64 GB of RAM. 
 
 # 3. For Developers
 If you have your own energy expressions: gradient , potential  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case` clause in the stiff `IRHSLocal()` and / or non stiff terms in `RHSLocal()` functions in PhaseFieldPet.c. You can also change the `InitialMicrostructure()` function in PhaseFieldPet.c  to suit other simulations than example triple junction application described here or read initial phase field data available from other software or experimental data.
