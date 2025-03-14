@@ -28,7 +28,7 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 [![Watch the video](Videos/static_triple_junction.png)](Videos/static_Triple_Junction.mp4)
 
 # 1. Usage
-  One can take  source code PhaseFieldPet.c, and compile and run it, visualize the results (default in vtk format) using visualizations softwares such as [ParaView](https://www.paraview.org/). The steps to download and install varies, but we give a general directions to do so here.
+  One can take  source code PhaseFieldPet.c, compile and run it, visualize the results (default in vtk format) using visualizations softwares such as [ParaView](https://www.paraview.org/). The steps to download and install varies, but we give a general directions to do so here.
 
 ## 1.1 Installation
 There are many ways to install PETSc. See [PETSc Installation](https://petsc.org/release/install/).
@@ -50,7 +50,7 @@ If your system has mpi installed ( or available, say via `module load openmpi` i
 ```bash
 - ./configure PETSC_ARCH=arch-optimized --with-debugging=0  COPTFLAGS='-O3 -march=native -mtune=native'  CXXOPTFLAGS='-O3  -mtune=native'  FOPTFLAGS='-O3 -march=native -mtune=native'  --download-fblaslapack --with-mpi-dir=/Path/to/your/MPI/Dir
 ```
- Note that  if you installed mpi implmentation with PETSc `mpiexec` or `mpirun` will be available in directory `$PETSC_DIR/$PETSC_ARCH/bin/mpiexec`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc`) and make an alias to `mpiexec` or put it in your `$PATH` variable for it to be available in every shell you open.
+ Note that  if you installed mpi implmentation with PETSc, `mpiexec` or `mpirun` will be available in directory `$PETSC_DIR/$PETSC_ARCH/bin/`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc`) and make an alias to `mpiexec` or put it in your `$PATH` variable for it to be available in every shell you open.
 
 
 ## 1.2 Compile the code
