@@ -13,8 +13,13 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 - [Introduction](#phasefieldpet)
 - [Usage](#1-usage)
    - [Installation](#11-installation)
-   - [Compile the code](#12-Compile-the-code)
-
+       - [From Linux Distribution Repository](#111-from-linux-distribution-repository-older-version)
+       - [From Source](#112-from-source-most-updated-versions)
+   - [Compile the code](#12-compile-the-code)
+   - [Run your simulation](#13-run-your-simulation)
+       - [Static Triple Junction ](#131-static-triple-junction-simulation)
+       - [Steady State Motion](#132-steady-state-motion-of-triple-junction)
+       - [With  Bulk Driving Force](#133-with-bulk-driving-force)
 - [For Developers](#2-for-developers)
 - [License](#3-license)
 
