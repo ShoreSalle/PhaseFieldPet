@@ -13,7 +13,7 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 - [Usage](#1-usage)
    - [Installation](#11-installation)
        - [From Linux Distribution Repository ( older version )](#111-from-linux-distribution-repository-older-version)
-       - [From Source (most updated version )](#112-from-source-most-updated-versions)
+       - [From Source (most updated versions )](#112-from-source-most-updated-versions)
    - [Compile the code](#12-compile-the-code)
    - [Run your simulation](#13-run-your-simulation)
        - [Static Triple Junction ](#131-static-triple-junction-simulation)
@@ -32,12 +32,12 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 
 ## 1.1 Installation
 There are many ways to install PETSc. See [PETSc Installation](https://petsc.org/release/install/).
-#### 1.1.1 From Linux Distribution Repository ( older version )
+#### 1.1.1 From Linux Distribution Repository (older version)
 On debian based such as Ubuntu Linux for instance
   ```bash
   sudo apt install petsc-dev
   ```
-#### 1.1.2 From Source ( most updated versions )
+#### 1.1.2 From Source (most updated versions)
 Steps to install vary based on what softwares are available in the machine you are connected to. For instance on the system where gcc, g++, gfortran  are available , but not mpi implmentation or lapack, PETSc will install it for you following
 ```bash
   - git clone -b release https://gitlab.com/petsc/petsc.git petsc
