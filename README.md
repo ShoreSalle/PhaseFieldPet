@@ -64,7 +64,7 @@ General format (while using mpiexec) is
  ```bash
 mpiexec -n # ./PhaseFieldPet [options]
 ```
-Unless otherwise overriden explicitily with options, PhaseFieldPet simulates the benchmark case introduced by [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995), considering a stationary triple junction problem. The default model configuration is the usage of dot gradient term (grad_dot), the well potential of Toth (pot_toth) and a Lagrange multiplier based multiphase-field formulation (pfe_mpfl). The default time stepping solver being Adaptive Runge Kutta Implicit-Explicit (ARKIMEX) method, where the stiff part of the equation is treated implicitly.
+Unless otherwise overriden explicitily with options, PhaseFieldPet simulates the benchmark case introduced by [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995), considering a stationary triple junction problem. The default model configuration is the usage of dot gradient term (`grad_dot`), the well potential of Toth (`pot_toth`) and a Lagrange multiplier based multiphase-field equation (`pfe_mpfl`). The default time stepping solver being Adaptive Runge Kutta Implicit-Explicit (`ARKIMEX`) method, where the stiff part of the differential equation is treated implicitly.
 
 ### 1.3.1 Static Triple Junction Simulation
 - Boundary condition in x direction is pinned.
@@ -73,17 +73,17 @@ Add option `-ts_monitor` to print information about each time step to the consol
   ```bash
 - mpiexec -n 4 ./PhaseFieldPet -ts_monitor
   ```
-Restrict each $\phi$'s to be in Gibbs simplex ( restrict each $\phi$'s to be in [0,1] and the sum of all $\phi$' = 1):
+Restrict each $\phi$'s to be in Gibbs simplex ( option `simplex` restrict each $\phi$'s to be in [0,1] and the sum of all $\phi$'s = 1):
   ```bash
 - mpiexec -n 4 ./PhaseFieldPet -simplex
   ```
-Use dot gradient formulation with obstacle potentials due to Steinbach 
+Use obstacle potentials due to Steinbach 
  ```bash
- - mpiexec -n 4 ./PhaseFieldPet -grad_dot  -pot_steinbach  -simplex
+ - mpiexec -n 4 ./PhaseFieldPet  -pot_steinbach  -simplex
   ```
 Save output results approximately every 10 seconds (default is 100 seconds).
  ```bash
- - mpiexec -n 4 ./PhaseFieldPet -grad_dot  -pot_steinbach  -simplex -twrite 10
+ - mpiexec -n 4 ./PhaseFieldPet -pot_steinbach  -simplex -twrite 10
   ```
 Use multi-phase-field model (MPF)
 ```bash
@@ -99,7 +99,7 @@ Use multi-order parameter model (MOP)
  ```
 Use Matrix Free Non linear solver
 ```bash
-- mpiexec  -n 4 ./PhaseFieldPet  -snes_mf -snes_type ksponly
+- mpiexec  -n 4 ./PhaseFieldPet  -snes_mf 
  ```
 Use Fully Implicit adaptive backward Differentiation Formula
 ```bash
@@ -109,6 +109,8 @@ Increase grid points to 256 x 256 x3
 ```bash
 - mpiexec -n 80 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256
  ```
+The example simulation result given in the associated paper is obtained with this execution. See the whole animation in [results](paper/).
+
 #### On a GPU (cuda based)
   ```bash
 - mpiexec -n 1 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256 -dm_mat_type aijcusparse -dm_vec_type cuda
