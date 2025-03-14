@@ -18,8 +18,7 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
    - [Run your simulation](#13-run-your-simulation)
        - [Static Triple Junction ](#131-static-triple-junction-simulation)
        - [Steady State Motion](#132-steady-state-motion-of-triple-junction)
-       - [With  Bulk Driving Force](#133-with-bulk-driving-force)
-    
+       - [With  Bulk Driving Force](#133-with-bulk-driving-force)    
 - [Example Performance Result](#2-example-performance-result)
 - [For Developers](#3-for-developers)
 - [License](#4-license)
@@ -61,7 +60,7 @@ General format (while using mpiexec) is
  ```bash
 mpiexec -n # ./PhaseFieldPet [options]
 ```
-Unless otherwise overriden explicitily with options, PhaseFieldPet simulates the benchmark case introduced by [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995), considering a stationary triple junction problem. The default model configuration is the usage of dot gradient term (`grad_dot`), the well potential of Toth (`pot_toth`) and a Lagrange multiplier based multiphase-field equation (`pfe_mpfl`). The default time stepping solver being Adaptive Runge Kutta Implicit-Explicit (`ARKIMEX`) method, where the stiff part of the differential equation is treated implicitly.
+Unless otherwise overriden explicitily with options, PhaseFieldPet simulates the benchmark case introduced by [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995), considering a stationary triple junction problem. The default model configuration is the usage of dot gradient term (`grad_dot`), the well potential of Toth (`pot_toth`) and a Lagrange multiplier based multiphase-field equation (MPFL). The default time stepping solver being Adaptive Runge Kutta Implicit-Explicit (`ARKIMEX`) method, where the stiff part of the differential equation is treated implicitly.
 
 ### 1.3.1 Static Triple Junction Simulation
 - Boundary condition in x direction is pinned.
@@ -126,6 +125,11 @@ All other options that have experimented in static triple junction can also be u
 All other options that have experimented in static triple junction can also be used here. Note that the bulk term is responsible for various other applications (thermal, chemical, mechanical,...) keeping the gradient and potential energy contributions fixed.
 
 # 2. Example Performance Result 
+
+Strong scalabilty of PhaseFieldPet is achieved for simulations of static triple junctions for results in the paper.
+
+
+This results is obtaine on Meggie cluster at  NHR@FAU obtained by running up  to 80 mpi processes on four compute nodes,  where each node has two Intel Xeon E5-2630v4 “Broadwell” chips (10 cores per chip) running at 2.2 GHz with 25 MB Shared Cache per chip and 64 GB of RAM. The result indicates excellent agreement with ideal expectations that the log-log plot is a straight line with slope of -1.
 
 # 3. For Developers
 If you have your own energy expressions: gradient , potential  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case` clause in the stiff `IRHSLocal()` and / or non stiff terms in `RHSLocal()` functions in PhaseFieldPet.c. You can also change the `InitialMicrostructure()` function in PhaseFieldPet.c  to suit other simulations than example triple junction application described here or read initial phase field data available from other software or experimental data.
