@@ -19,13 +19,10 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
        - [Static Triple Junction ](#131-static-triple-junction-simulation)
        - [Steady State Motion](#132-steady-state-motion-of-triple-junction)
        - [With  Bulk Driving Force](#133-with-bulk-driving-force)
-- [For Developers](#2-for-developers)
-- [License](#3-license)
-
-
-#### Static Triple Junction animation
-
-[![Watch the video](Videos/static_triple_junction.png)](Videos/static_Triple_Junction.mp4)
+    
+- [Example Performance Result](#2-example-performance-result)
+- [For Developers](#3-for-developers)
+- [License](#4-license)
 
 # 1. Usage
   One can take  source code PhaseFieldPet.c, compile and run it, visualize the results (default in vtk format) using visualizations softwares such as [ParaView](https://www.paraview.org/). The steps to download and install varies, but we give a general directions to do so here.
@@ -109,7 +106,7 @@ Increase grid points to 256 x 256 x3
 ```bash
 - mpiexec -n 80 PhaseFieldPet -simplex -ts_type bdf -da_grid_x 256 -da_grid_y 256
  ```
-The example simulation result given in the associated paper is obtained with this execution. See the whole animation in [results](paper/).
+The example simulation result given in the associated paper is obtained with this execution. See the whole time evolution animation in [Results](Results/) folder.
 
 #### On a GPU (cuda based)
   ```bash
@@ -120,20 +117,22 @@ The example simulation result given in the associated paper is obtained with thi
 ```bash
 - mpiexec -n 4 ./PhaseFieldPet -bcx_neumann -snes_type ksponly  -ts_monitor
 ```
-All other options that have experimented in static triple junction can also be added here.
+All other options that have experimented in static triple junction can also be used here.
 
 ### 1.3.3 With bulk driving force
 ```bash
 - mpiexec -n 4 ./PhaseFieldPet -bulk_b2
 ```
-All other options that have experimented in static triple junction can also be added here. NB, this term will be responsible for various other applications (thermal, chemical, mechanical,...) keeping the gradient and potential terms fixed. 
+All other options that have experimented in static triple junction can also be used here. Note that the bulk term is responsible for various other applications (thermal, chemical, mechanical,...) keeping the gradient and potential energy contributions fixed.
 
-# 2. For Developers
-If you have your own energy expressions: gradient , potential  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case` clause in the stiff `IRHSLocal()` and or non stiff terms in `RHSLocal()` functions in PhaseFieldPet.c. You can also change the `InitialMicrostructure()` function in PhaseFieldPet.c  to suit other simulations than example triple junction application described here or read initial phase field data available from other software or experimental data.
-#### 2.1 Exercise
+# 2. Example Performance Result 
+
+# 3. For Developers
+If you have your own energy expressions: gradient , potential  and bulk driving term, you can add it to PhaseFieldPet easily by including the respective `case` clause in the stiff `IRHSLocal()` and / or non stiff terms in `RHSLocal()` functions in PhaseFieldPet.c. You can also change the `InitialMicrostructure()` function in PhaseFieldPet.c  to suit other simulations than example triple junction application described here or read initial phase field data available from other software or experimental data.
+#### Exercise
 - Include your own gradient and/or  potential terms and solve the triple junction problem. Contact us if you need help.
 
-# 3. License
+# 4. License
 PhaseFieldPet is distributed under a 2-clause BSD license (as of PETSc).
 
 " Copyright (c) 1991-2025, UChicago Argonne, LLC and the PETSc Developers and Contributors All rights reserved. PETSc is distributed under a 2-clause BSD license which allows for free use, modification, and distribution of the software. For full details, see the [PETSc license](https://petsc.org/release/install/license/#clause-bsd-license). " 
