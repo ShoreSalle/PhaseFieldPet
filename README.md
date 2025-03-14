@@ -8,11 +8,22 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
    - Multicore CPUs via OpenMP (using third party package integration with petsc).
    - Pthreads.
 
+## Table of Contents
+
+- [Introduction](#phasefieldpet)
+- [Usage](#1-usage)
+   - [Installation](#11-installation)
+   - [Compile the code](#12-Compile-the-code)
+
+- [For Developers](#2-for-developers)
+- [License](#3-license)
+
+
 #### Static Triple Junction animation
 
 [![Watch the video](Videos/static_triple_junction.png)](Videos/static_Triple_Junction.mp4)
 
-# 1. How to use
+# 1. Usage
   One can take  source code PhaseFieldPet.c, and compile and run it, visualize the results (default in vtk format) using visualizations softwares such as [ParaView](https://www.paraview.org/). The steps to download and install varies, but we give a general directions to do so here.
 
 ## 1.1 Installation
@@ -38,7 +49,7 @@ If your system has mpi installed ( or available, say via `module load openmpi` i
  Note that  if you installed mpi implmentation with PETSc `mpiexec` or `mpirun` will be available in directory `$PETSC_DIR/$PETSC_ARCH/bin/mpiexec`. You can append `PETSC_DIR` and `PETSC_ARCH` in a start up files (like in `~/.bashrc`) and make an alias to `mpiexec` or put it in your `$PATH` variable for it to be available in every shell you open.
 
 
-## 1.2 Compile your code mpf.c
+## 1.2 Compile the code
 If the `makefile` (`Makefile`) and PhaseFieldPet.c are in one directory, 
   ```bash
      make PhaseFieldPet
