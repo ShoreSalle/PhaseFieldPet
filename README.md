@@ -12,8 +12,8 @@ PhaseFieldPet runs on wide variety of hardware and it supports:
 - [Introduction](#phasefieldpet)
 - [Usage](#1-usage)
    - [Installation](#11-installation)
-       - [From Linux Distribution Repository ( older version )](#111-from-linux-distribution-repository-older-version)
-       - [From Source (most updated versions )](#112-from-source-most-updated-versions)
+       - [From Linux Distribution Repository (older version)](#111-from-linux-distribution-repository-older-version)
+       - [From Source (most updated versions)](#112-from-source-most-updated-versions)
    - [Compile the code](#12-compile-the-code)
    - [Run your simulation](#13-run-your-simulation)
        - [Static Triple Junction ](#131-static-triple-junction-simulation)
@@ -60,14 +60,20 @@ If the `makefile` (`Makefile`) and PhaseFieldPet.c are in one directory,
   ```
 
 ## 1.3 Run your simulation
+General format (while using mpiexec) is 
+ ```bash
+mpiexec -n # ./PhaseFieldPet [options]
+```
+Unless otherwise overriden explicitily with options, PhaseFieldPet simulates the benchmark case introduced by [Daubner et al., (2023)](https://doi.org/10.1016/j.commatsci.2022.111995), considering a stationary triple junction problem. The default model configuration is the usage of dot gradient term (grad_dot), the well potential of Toth (pot_toth) and a Lagrange multiplier based multiphase-field formulation (pfe_mpfl). The default time stepping solver being Adaptive Runge Kutta Implicit-Explicit (ARKIMEX) method, where the stiff part of the equation is treated implicitly.
+
 ### 1.3.1 Static Triple Junction Simulation
 - Boundary condition in x direction is pinned.
 #### On CPU with n # mpi processes
-Solve with default time step solver set in the code (Adaptive Runge Kutta Implicit-Explicit) and see as time progress (`ts_monitor`).
+Add option `-ts_monitor` to print information about each time step to the console.
   ```bash
 - mpiexec -n 4 ./PhaseFieldPet -ts_monitor
   ```
-Restrict each $\phi$'s to be in Gibbs simplex:
+Restrict each $\phi$'s to be in Gibbs simplex ( restrict each $\phi$'s to be in [0,1] and the sum of all $\phi$' = 1):
   ```bash
 - mpiexec -n 4 ./PhaseFieldPet -simplex
   ```
